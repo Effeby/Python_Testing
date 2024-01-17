@@ -24,12 +24,16 @@ clubs = loadClubs()
 def index():
     return render_template('index.html')
 
+#Route pour la page acceuil de chaque club
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
-    club = [club for club in clubs if club['email'] == request.form['email']][0]
-    return render_template('welcome.html',club=club,competitions=competitions)
+    club = next((club for club in clubs if club['email'] == request.form['email']), None)
+    if club:
+        return render_template('welcome.html',club=club,competitions=competitions)
+    else:
+        return redirect(url_for('index'))
 
-
+#Route pour réserver les tickets
 @app.route('/book/<competition>/<club>')
 def book(competition,club):
     foundClub = [c for c in clubs if c['name'] == club][0]
@@ -40,7 +44,7 @@ def book(competition,club):
         flash("Something went wrong-please try again")
         return render_template('welcome.html', club=club, competitions=competitions)
 
-
+#Rooute pour les calcules sur la reservation des tickets
 @app.route('/purchasePlaces',methods=['POST'])
 def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
