@@ -31,7 +31,9 @@ def showSummary():
     if club:
         return render_template('welcome.html',club=club,competitions=competitions)
     else:
+        flash("Email introuvable, veuillez entrer un mail valide !")
         return redirect(url_for('index'))
+
 
 #Route pour réserver les tickets
 @app.route('/book/<competition>/<club>')
@@ -50,9 +52,17 @@ def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesRequired = int(request.form['places'])
-    competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
-    flash('Great-booking complete!')
-    return render_template('welcome.html', club=club, competitions=competitions)
+
+    #verification du nombre de point si c'est insuffisant alors ça affiche Point insuffisabt!
+    if int(club['points']) < int(placesRequired) :
+        flash('Point insuffisant!')
+        return render_template('welcome.html', club=club, competitions=competitions)
+    else:
+        #calcule pour que le nombre de point et les places diminuent en fonction du nombre de place réservé
+        competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
+        club['points']= int(club['points']) - placesRequired
+        flash('Great-booking complete!')
+        return render_template('welcome.html', club=club, competitions=competitions)
 
 
 # TODO: Add route for points display
