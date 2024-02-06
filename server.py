@@ -22,7 +22,7 @@ clubs = loadClubs()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', clubs = clubs, competitions = competitions)
 
 #Route pour la page acceuil de chaque club
 @app.route('/showSummary',methods=['POST'])
@@ -54,9 +54,12 @@ def purchasePlaces():
     placesRequired = int(request.form['places'])
 
     #verification du nombre de point si c'est insuffisant alors ça affiche Point insuffisabt!
-    if int(club['points']) < int(placesRequired) :
-        flash('Point insuffisant!')
-        return render_template('welcome.html', club=club, competitions=competitions)
+    if int(club['points']) < int(placesRequired):
+        flash('Points insuffisant!')
+        return redirect(request.referrer)
+    elif int(placesRequired) > int(competition['numberOfPlaces']):
+        flash('Probleme de surreservation')
+        return redirect(request.referrer)
     else:
         #calcule pour que le nombre de point et les places diminuent en fonction du nombre de place réservé
         competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
@@ -64,8 +67,7 @@ def purchasePlaces():
         flash('Great-booking complete!')
         return render_template('welcome.html', club=club, competitions=competitions)
 
-
-# TODO: Add route for points display
+#TODO: Add route for points display
 
 
 @app.route('/logout')

@@ -1,36 +1,127 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Summary | GUDLFT Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .tete {
+            background-color: #3498db;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        hr {
+            border: 1px solid #ddd;
+        }
+
+        .flash-messages {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .flash-message {
+            color: green;
+        }
+
+        .logout-btn {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-left: auto;
+            background-color: #e74c3c;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-        <h2>Welcome, {{club['email']}} </h2><a href="{{url_for('logout')}}">Logout</a>
+    <div class="tete">
+        <h2>🎊Welcome, {{club['email']}}🎊</h2>
+        <a class="logout-btn" href="{{url_for('logout')}}">Logout</a>
+    </div>
 
-    {% with messages = get_flashed_messages()%}
-    {% if messages %}
-        <ul>
-       {% for message in messages %}
-            <li>{{message}}</li>
-        {% endfor %}
-       </ul>
-    {% endif%}
-    Points available: {{club['points']}}
-    <h3>Competitions:</h3>
-    <ul>
-        {% for comp in competitions%}
-        <li>
-            {{comp['name']}}<br />
-            Date: {{comp['date']}}</br>
-            Number of Places: {{comp['numberOfPlaces']}}
-            {%if comp['numberOfPlaces']|int >0%}
-            <a href="{{ url_for('book',competition=comp['name'],club=club['name']) }}">Book Places</a>
-            {%endif%}
-        </li>
-        <hr />
-        {% endfor %}
-    </ul>
-    {%endwith%}
+    <div class="flash-messages">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <b><li class="flash-message">🥳{{ message }}🥳</li></b>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    </div>
+
+    <div class="container-fluid">
+        <p>Points available: {{club['points']}}</p>
+    </div>
+
+    <div class="card container">
+        <div class="card-header">
+            <h2>Competitions:</h2>
+        </div>
+        <div class="card-body">
+            <ul>
+                {% for comp in competitions %}
+                    <li>
+                        {{ comp['name'] }}<br />
+                        Date: {{ comp['date'] }}<br />
+                        Number of Places: {{ comp['numberOfPlaces'] }}
+                        {% if comp['numberOfPlaces'] | int > 0 %}
+                            <a href="{{ url_for('book', competition=comp['name'], club=club['name']) }}">Book Places</a>
+                        {% endif %}
+                    </li>
+                    <hr />
+                {% endfor %}
+            </ul>
+        </div>
+      </div>
 
 </body>
 </html>
